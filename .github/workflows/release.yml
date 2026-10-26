@@ -15,7 +15,7 @@ jobs:
   # Quick checks that fail fast
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
   # Version consistency check
   version-check:
     name: Version Consistency Check
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
   # Security audit
   security:
     name: Security Audit
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: [lint, version-check]
     timeout-minutes: 10
     steps:
@@ -106,7 +106,7 @@ jobs:
   # Verify tests pass before releasing
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: [lint, version-check]
     timeout-minutes: 20
     steps:
@@ -127,7 +127,7 @@ jobs:
   # Publish to crates.io (skip for pre-release versions)
   publish:
     name: Publish to crates.io
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: [lint, version-check, security, test]
     timeout-minutes: 20
     # Only publish to crates.io for stable releases (not beta, alpha, rc, etc.)
@@ -157,7 +157,7 @@ jobs:
   # Create GitHub Release with all binaries
   release:
     name: Create GitHub Release
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     # Only depend on publish for non-beta releases, always depend on build-binaries
     needs: [build-binaries]
     if: always() && needs.build-binaries.result == 'success'
@@ -211,7 +211,7 @@ jobs:
   # Publish to npm (after GitHub Release so binaries are available)
   npm-publish:
     name: Publish to npm
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: [release]
     if: "!contains(github.ref, '-beta') && !contains(github.ref, '-alpha') && !contains(github.ref, '-rc')"
     timeout-minutes: 10

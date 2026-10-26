@@ -25,7 +25,7 @@ jobs:
   # Quick checks that fail fast
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +53,7 @@ jobs:
   # Main test suite
   test:
     name: Test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    runs-on: "${{ (matrix.os) == 'ubuntu-latest' && fromJSON('[\"self-hosted\",\"linux\",\"x64\"]') || (matrix.os) == 'macos-latest' && fromJSON('[\"self-hosted\",\"macOS\",\"ARM64\"]') || (matrix.os) == 'windows-latest' && fromJSON('[\"self-hosted\",\"windows\",\"x64\"]') || (matrix.os) }}"
     needs: lint
     timeout-minutes: 30
     strategy:
@@ -79,7 +79,7 @@ jobs:
   # Security audit
   security:
     name: Security Audit
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: lint
     timeout-minutes: 10
     steps:
